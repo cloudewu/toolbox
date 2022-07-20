@@ -1,0 +1,52 @@
+#!/bin/sh
+
+HOME="/home/nlplab/joaw"
+SERVER=`basename $0`
+
+parseRoute() {
+	PATH=
+	ENVIRON=
+
+	if [ "$1" = "booster" ]; then
+		PATH="projects/linggle-booster-nextjs"
+	elif [ "$1" = "api" ]; then
+		PATH="projects/linggle-booster-api"
+	elif [ "$1" = "ws" ]; then
+		PATH="projects"
+	elif [ "$1" = "app" ]; then
+		PATH="application"
+	elif [ "$1" = "temp" ]; then
+		PATH="projects/templatize"
+	elif [ "$1" = "dp" ]; then
+		PATH="projects/templatize/dependency_parser"
+	elif [ "$1" = "gp" ]; then
+		PATH="projects/grammar-pattern"
+	elif [ "$1" = "webapp" ]; then
+		PATH="projects/templatize/webapp"
+	else
+		PATH="$1"
+	fi
+
+	echo "cd ${HOME}/${PATH}; exec $SHELL --login; ${COMMAND}"
+}
+
+if [ -n "$1" ]; then
+	COMMAND=
+
+	if [ "$1" = "cd" ]; then
+		COMMAND=$(parseRoute $2)
+	elif [ "$1" = "jupyter" ]; then
+		COMMAND="${HOME}/utils/open_jupyterNB.sh"
+	else
+		COMMAND="$1"
+	fi
+
+	echo "ssh -t ${SERVER} \"${COMMAND}\""
+	ssh -t ${SERVER} "${COMMAND}"
+
+else
+
+	echo "ssh ${SERVER}"
+	ssh ${SERVER}
+
+fi
